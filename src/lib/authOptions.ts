@@ -10,36 +10,36 @@ export const authOptions: NextAuthOptions = {
     Google({
       clientId: process.env.GOOGLE_ID!,
       clientSecret: process.env.GOOGLE_SECRET!,
-      // You can add "allowDangerousEmailAccountLinking: true" during dev if needed
     }),
   ],
+
+  // ✅ Add this line:
+  allowDangerousEmailAccountLinking: true,
+
   session: {
-    // default is jwt; db sessions also work with adapter but jwt is simpler for app router
-    strategy: "jwt",
+    strategy: "jwt", // jwt sessions are simpler for App Router
   },
+
   callbacks: {
-    /**
-     * Put the user's role into the JWT so middleware can read it.
-     */
     async jwt({ token, user }) {
-      // When user logs in first time `user` is defined; later only `token` is.
       if (user) {
-        // @ts-ignore - type safe augmentation done below
+        // @ts-ignore - we add a custom role
         token.role = (user as any).role ?? "STUDENT";
       }
       return token;
     },
-    /**
-     * Expose role on the session object (client/server components can read it).
-     */
     async session({ session, token }) {
-      // @ts-ignore
+      // @ts-ignore - propagate role to session
       session.role = (token as any).role ?? "STUDENT";
       return session;
     },
   },
+
   pages: {
-    // Optional: use default pages, or add your own at /app/(auth)/signin
+    // (optional custom pages)
     // signIn: "/signin"
-  }
+  },
+
+  // ✅ Optional but helpful for debugging sign-in errors
+  debug: process.env.NODE_ENV !== "production",
 };
