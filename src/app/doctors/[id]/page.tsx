@@ -25,7 +25,7 @@ export default async function DoctorDetail({
     orderBy: { start: "asc" },
     take: 50,
   });
-  const available = upcoming.filter(s => s.bookedCount < s.capacity);
+  const available = upcoming.filter((s: any) => s.bookedCount < s.capacity);
 
   return (
     <div className="space-y-6">
