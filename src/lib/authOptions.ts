@@ -10,11 +10,9 @@ export const authOptions: NextAuthOptions = {
     Google({
       clientId: process.env.GOOGLE_ID!,
       clientSecret: process.env.GOOGLE_SECRET!,
+      allowDangerousEmailAccountLinking: true,
     }),
   ],
-
-  // ✅ Add this line:
-  allowDangerousEmailAccountLinking: true,
 
   session: {
     strategy: "jwt", // jwt sessions are simpler for App Router
