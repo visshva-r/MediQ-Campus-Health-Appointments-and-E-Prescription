@@ -6,9 +6,11 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const q = searchParams.get("q") ?? "";
   const page = Number(searchParams.get("page") ?? "1");
-  const take = 10, skip = (page - 1) * take;
+  const take = 10; 
+  const skip = (page - 1) * take;
 
-  const where = {
+  // Added ": any" here to bypass the strict QueryMode check
+  const where: any = {
     OR: [
       { name: { contains: q, mode: "insensitive" } },
       { specialty: { contains: q, mode: "insensitive" } },
@@ -20,5 +22,12 @@ export async function GET(req: Request) {
     prisma.doctor.count({ where }),
   ]);
 
-  return NextResponse.json({ data: { items, page, total, pages: Math.ceil(total / take) } });
+  return NextResponse.json({ 
+    data: { 
+      items, 
+      page, 
+      total, 
+      pages: Math.ceil(total / take) 
+    } 
+  });
 }
