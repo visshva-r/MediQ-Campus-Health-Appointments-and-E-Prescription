@@ -13,7 +13,7 @@ export default async function DoctorDetail({ params }: { params: { id: string } 
     orderBy: { start: "asc" },
     take: 30,
   });
-  const available = upcoming.filter(s => s.bookedCount < s.capacity);
+  const available = upcoming.filter((s: any) => s.bookedCount < s.capacity);
 
   return (
     <div className="space-y-6">

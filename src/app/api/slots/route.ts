@@ -27,7 +27,7 @@ export async function GET(req: Request) {
   });
 
   // filter out full slots
-  const available = slots.filter(s => s.bookedCount < s.capacity);
+  const available = slots.filter((s: any) => s.bookedCount < s.capacity);
 
   return NextResponse.json({ data: available });
 }
