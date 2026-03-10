@@ -37,7 +37,7 @@ export default async function DoctorDashboard() {
         <div className="rounded border p-4 text-sm text-gray-400">No upcoming appointments.</div>
       ) : (
         <ul className="space-y-2">
-          {appts.map(a => (
+          {appts.map((a: any) => (
             <li key={a.id} className="rounded border p-4 space-y-1">
               <div className="flex items-center justify-between">
                 

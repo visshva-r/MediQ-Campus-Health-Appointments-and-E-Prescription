@@ -16,7 +16,7 @@ export default async function DoctorsPage() {
         <p>No doctors available yet.</p>
       ) : (
         <div className="flex flex-col gap-4">
-          {doctors.map((d) => (
+          {doctors.map((d: any) => (
             <div
               key={d.id}
               className="border border-neutral-700 rounded-lg p-4 flex justify-between items-center"

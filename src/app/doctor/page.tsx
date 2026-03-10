@@ -19,7 +19,7 @@ export default async function DoctorsPage() {
 
   return (
     <div className="grid gap-3">
-      {doctors.map(d => (
+      {doctors.map((d: any) => (
         <Card key={d.id} className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="size-10 rounded-full bg-neutral-800 grid place-items-center font-medium">{d.name[0]}</div>

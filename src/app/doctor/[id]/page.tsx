@@ -26,7 +26,7 @@ export default async function DoctorDetail({ params }: { params: { id: string } 
       <div className="space-y-3">
         <h2 className="text-xl font-medium">Available slots</h2>
         {available.length === 0 && <Card className="text-sm text-gray-400">No available slots.</Card>}
-        {available.map(s => (
+        {available.map((s: any) => (
           <Card key={s.id} className="flex items-center justify-between">
             <div className="text-sm">
               {fmtDateTime(new Date(s.start))} — {fmtTime(new Date(s.end))}

@@ -33,7 +33,7 @@ export default async function MyAppointments() {
 
   return (
     <div className="space-y-3">
-      {appts.map(a => (
+      {appts.map((a: any) => (
         <Card key={a.id} className="space-y-1">
           <div className="flex items-center justify-between">
             <CardTitle>{a.doctor.name} — {a.doctor.specialty}</CardTitle>

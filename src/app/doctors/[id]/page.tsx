@@ -45,7 +45,7 @@ export default async function DoctorDetail({
           </div>
         ) : (
           <ul className="space-y-2">
-            {available.map(s => (
+            {available.map((s: any) => (
               <li key={s.id} className="flex items-center justify-between rounded border p-3">
                 <div className="text-sm">
                   {fmtDateTime(new Date(s.start))} — {fmtTime(new Date(s.end))}

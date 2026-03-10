@@ -64,7 +64,7 @@ export default async function AdminSlotsPage({
             window.location = `/admin/slots?doctorId=${v}`;
           }}
         >
-          {doctors.map(d => (
+          {doctors.map((d: any) => (
             <option key={d.id} value={d.id}>{d.name} — {d.specialty}</option>
           ))}
         </select>
@@ -83,7 +83,7 @@ export default async function AdminSlotsPage({
         </div>
       ) : (
         <ul className="space-y-2">
-          {slots.map(s => (
+          {slots.map((s: any) => (
             <li key={s.id} className="flex items-center justify-between rounded border p-3">
               <div className="text-sm">
                 {fmtDateTime(new Date(s.start))} — {fmtTime(new Date(s.end))}
