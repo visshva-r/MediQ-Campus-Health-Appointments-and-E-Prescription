@@ -52,7 +52,7 @@ export default async function AdminPage() {
       <form action={createSlots} className="space-y-3 border p-4 rounded">
         <h2 className="font-medium">Add Slots</h2>
         <select name="doctorId" className="w-full px-2 py-1 rounded bg-neutral-800">
-          {doctors.map(d => (
+          {doctors.map((d: any) => (
             <option key={d.id} value={d.id}>{d.name}</option>
           ))}
         </select>
