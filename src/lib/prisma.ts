@@ -4,9 +4,10 @@ const prismaClientSingleton = () => {
   return new PrismaClient();
 };
 
-declare const globalThis: {
-  prismaGlobal: ReturnType<typeof prismaClientSingleton>;
-} & typeof globalThis;
+// We use "global" here instead of "globalThis" to avoid the circular reference
+declare global {
+  var prismaGlobal: undefined | ReturnType<typeof prismaClientSingleton>;
+}
 
 export const prisma = globalThis.prismaGlobal ?? prismaClientSingleton();
 
