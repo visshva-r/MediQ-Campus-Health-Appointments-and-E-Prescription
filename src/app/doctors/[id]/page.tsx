@@ -7,8 +7,11 @@ export const dynamic = "force-dynamic";
 
 export default async function DoctorDetail({
   params,
-}: { params: { id: string } }) {
-  const doctor = await prisma.doctor.findUnique({ where: { id: params.id } });
+}: { params: Promise<{ id: string }> }) {
+  // We have to await the params in Next.js 15!
+  const { id } = await params; 
+  
+  const doctor = await prisma.doctor.findUnique({ where: { id: id } });
   if (!doctor) {
     return (
       <div className="rounded border p-4">

@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/lib/auth";
 import { fmtDateTime, fmtTime } from "@/lib/date";
+import { revalidatePath } from "next/cache"; // 1. Added this import!
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +15,11 @@ export default async function DoctorDashboard() {
     const status = String(formData.get("status") || "PENDING") as
       | "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELLED";
     if (!id) return;
+    
     await prisma.appointment.update({ where: { id }, data: { status } });
+    
+    // 2. Added revalidatePath so the screen refreshes immediately after clicking a button
+    revalidatePath("/doctor"); 
   }
 
   // show upcoming (today onward), pending first
@@ -35,7 +40,12 @@ export default async function DoctorDashboard() {
           {appts.map(a => (
             <li key={a.id} className="rounded border p-4 space-y-1">
               <div className="flex items-center justify-between">
-                <div className="font-medium">{a.user?.email ?? "Student"}</div>
+                
+                {/* 3. THIS IS THE FIX! It now checks for Name first, then Email, then "Student" */}
+                <div className="font-medium text-lg text-emerald-600">
+                  {a.user?.name || a.user?.email || "Student"}
+                </div>
+                
                 <div className="text-xs px-2 py-1 rounded border">
                   {a.status}
                 </div>
@@ -48,17 +58,17 @@ export default async function DoctorDashboard() {
                 <form action={setStatus}>
                   <input type="hidden" name="id" value={a.id} />
                   <input type="hidden" name="status" value="CONFIRMED" />
-                  <button className="px-3 py-1.5 rounded bg-emerald-600 text-white">Confirm</button>
+                  <button className="px-3 py-1.5 rounded bg-emerald-600 text-white hover:bg-emerald-500">Confirm</button>
                 </form>
                 <form action={setStatus}>
                   <input type="hidden" name="id" value={a.id} />
                   <input type="hidden" name="status" value="COMPLETED" />
-                  <button className="px-3 py-1.5 rounded bg-sky-600 text-white">Complete</button>
+                  <button className="px-3 py-1.5 rounded bg-sky-600 text-white hover:bg-sky-500">Complete</button>
                 </form>
                 <form action={setStatus}>
                   <input type="hidden" name="id" value={a.id} />
                   <input type="hidden" name="status" value="CANCELLED" />
-                  <button className="px-3 py-1.5 rounded bg-rose-600 text-white">Cancel</button>
+                  <button className="px-3 py-1.5 rounded bg-rose-600 text-white hover:bg-rose-500">Cancel</button>
                 </form>
               </div>
             </li>
