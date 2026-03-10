@@ -19,7 +19,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    await prisma.doctor.delete({ where: { id: params.id } });
+    await prisma.doctor.delete({ where: { id: id } });
     return NextResponse.json({ ok: true });
   } catch (e: any) {
     // Always JSON, never HTML

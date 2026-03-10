@@ -9,7 +9,7 @@ export async function DELETE(
   const { id } = await params; // Added await
   
   try {
-    await prisma.slot.delete({ where: { id } });
+    await prisma.slot.delete({ where: { id: id } });
     return NextResponse.json({ ok: true });
   } catch (error) {
     return NextResponse.json({ error: "Failed to delete slot" }, { status: 500 });
