@@ -67,7 +67,7 @@ export default async function AdminPage() {
       {/* Optional list with delete buttons */}
       <div className="space-y-2">
         <h2 className="text-lg font-medium">Existing Doctors</h2>
-        {doctors.map(d => (
+        {doctors.map((d: any) => (
           <div key={d.id} className="flex items-center justify-between border rounded p-3">
             <div>{d.name} — {d.specialty}</div>
             <DeleteDoctorButton id={d.id} />
