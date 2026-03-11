@@ -1,8 +1,9 @@
 import { createClient } from '@supabase/supabase-js';
 
 // We use the Service Role Key here to bypass RLS for secure server-side operations
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY! || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+// Fallback to empty strings during build time to prevent crash
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder.supabase.co";
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder";
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
