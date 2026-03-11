@@ -3,7 +3,7 @@
 MediQ is a **full-stack web application** that allows campus students to book doctor appointments, view prescriptions, and manage health schedules — all in one platform.
 
 ## 🌐 Live Demo
-**[Visit MediQ on Vercel](#)** ← (update link after deployment)
+**[[Visit MediQ on Vercel](#)](https://mediq-campus-health-appointments-an.vercel.app/)**
 
 ---
 

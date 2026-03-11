@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/lib/auth";
 import { fmtDateTime, fmtTime } from "@/lib/date";
-import { revalidatePath } from "next/cache"; // 1. Added this import!
+import { revalidatePath } from "next/cache";
+import PrescriptionUpload from "./prescription_upload";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +19,7 @@ export default async function DoctorDashboard() {
     
     await prisma.appointment.update({ where: { id }, data: { status } });
     
-    // 2. Added revalidatePath so the screen refreshes immediately after clicking a button
+    // Refreshes the screen immediately after clicking a button
     revalidatePath("/doctor"); 
   }
 
@@ -41,7 +42,7 @@ export default async function DoctorDashboard() {
             <li key={a.id} className="rounded border p-4 space-y-1">
               <div className="flex items-center justify-between">
                 
-                {/* 3. THIS IS THE FIX! It now checks for Name first, then Email, then "Student" */}
+                {/* Check for Name first, then Email, then "Student" */}
                 <div className="font-medium text-lg text-emerald-600">
                   {a.user?.name || a.user?.email || "Student"}
                 </div>
@@ -53,7 +54,26 @@ export default async function DoctorDashboard() {
               <div className="text-sm text-gray-300">
                 {fmtDateTime(new Date(a.slot.start))} — {fmtTime(new Date(a.slot.end))}
               </div>
+              
               {a.reason && <div className="text-sm">Reason: {a.reason}</div>}
+
+              {/* Prescription Upload/View Section */}
+              <div className="pt-2 pb-1">
+                {a.prescriptionUrl ? (
+                  <a 
+                    href={a.prescriptionUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-sm text-blue-500 font-medium hover:underline"
+                  >
+                    📄 View Uploaded Prescription
+                  </a>
+                ) : (
+                  <PrescriptionUpload appointmentId={a.id} />
+                )}
+              </div>
+
+              {/* Status Update Buttons */}
               <div className="flex gap-2 pt-2">
                 <form action={setStatus}>
                   <input type="hidden" name="id" value={a.id} />
