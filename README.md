@@ -1,38 +1,46 @@
 # 🏥 MediQ — Campus Health Appointments & E-Prescription
 
-MediQ is a **full-stack web application** that allows campus students to book doctor appointments, view prescriptions, and manage health schedules — all in one platform.
+MediQ is a **full-stack web application** that allows campus students to book doctor appointments, view secure e-prescriptions, and manage health schedules — all in one streamlined platform.
 
 ## 🌐 Live Demo
-**[[Visit MediQ on Vercel](#)](https://mediq-campus-health-appointments-an.vercel.app/)**
+**[Visit MediQ on Vercel](https://mediq-campus-health-appointments-an.vercel.app/)**
 
 ---
 
-## 🚀 Features
-✅ Google Sign-In authentication (NextAuth)  
-✅ Browse and book available doctor slots  
-✅ Doctor dashboard for confirming, completing, and cancelling appointments  
-✅ Admin panel for managing doctors and slots  
-✅ Supabase-powered Postgres database  
-✅ Fully responsive UI with TailwindCSS  
-✅ Prisma ORM with automatic migrations  
+## 🚀 Key Engineering Highlights
+* **Version Migration & Security:** Successfully migrated the application to **Next.js 15**, resolving critical security vulnerabilities (CVE-2025-66478) and adapting to strict React server-component rendering rules.
+* **Secure Cloud Storage:** Implemented enterprise-grade file uploads for e-prescriptions using **Supabase Storage** and secure **Signed URLs**, bypassing server payload limits.
+* **Database Optimization:** Structured robust ORM connections using **Prisma Singleton** patterns to prevent connection pooling exhaustion in serverless Vercel environments.
+* **Automated Uptime:** Integrated continuous monitoring via **UptimeRobot** (HEAD requests) to prevent Supabase database pausing and guarantee 100% resume-ready availability.
+
+---
+
+## ✨ Features
+✅ **Role-Based Access Control:** Secure dashboards dynamically rendered for Students, Doctors, and Admins.
+✅ **Secure Authentication:** Google OAuth integration via NextAuth.js.
+✅ **Appointment Management:** Real-time booking, confirming, completing, and cancelling of doctor slots.
+✅ **E-Prescriptions:** Direct-to-cloud PDF/Image uploads for doctors to securely attach to patient records.
+✅ **Responsive UI:** Fully mobile-optimized interface built with TailwindCSS.
 
 ---
 
 ## 🧠 Tech Stack
 | Layer | Technology |
 |:------|:------------|
-| Frontend | Next.js 15, React, TypeScript |
-| Styling | TailwindCSS |
-| Backend | Next.js API Routes |
-| Database | Supabase (PostgreSQL) |
-| ORM | Prisma |
-| Auth | NextAuth.js (Google OAuth) |
-| Hosting | Vercel |
+| **Frontend** | Next.js 15 (App Router), React, TypeScript |
+| **Styling** | TailwindCSS |
+| **Backend** | Next.js API Routes (Serverless) |
+| **Database** | Supabase (PostgreSQL) |
+| **Storage** | Supabase Storage Buckets |
+| **ORM** | Prisma |
+| **Auth** | NextAuth.js (Google OAuth) |
+| **Hosting** | Vercel |
 
 ---
 
 ## 🛠️ Local Setup
-1. Clone the repository  
-   ```bash
-   git clone https://github.com/visshva-r/MediQ-Campus-Health-Appointments-and-E-Prescription.git
-   cd MediQ-Campus-Health-Appointments-and-E-Prescription
+
+**1. Clone the repository**
+```bash
+git clone [https://github.com/visshva-r/MediQ-Campus-Health-Appointments-and-E-Prescription.git](https://github.com/visshva-r/MediQ-Campus-Health-Appointments-and-E-Prescription.git)
+cd MediQ-Campus-Health-Appointments-and-E-Prescription
