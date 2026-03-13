@@ -6,36 +6,52 @@ export default function BookButton({
   slotId,
 }: { doctorId: string; slotId: string }) {
   const [loading, setLoading] = useState(false);
-  const [reason, setReason] = useState(""); // 1. Added state for the reason
+  const [reason, setReason] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   async function book() {
+    setError(null);
     setLoading(true);
     try {
       const res = await fetch("/api/appointments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        // 2. Added reason to the data being sent to the database
         body: JSON.stringify({ doctorId, slotId, reason }), 
       });
-      if (!res.ok) throw new Error("Booking failed");
+      if (!res.ok) {
+        let message = "Booking failed";
+        try {
+          const data = await res.json();
+          if (data?.error) message = data.error;
+        } catch {
+          // ignore json parse errors
+        }
+        throw new Error(message);
+      }
       window.location.href = "/me/appointments";
     } catch (e: any) {
-      alert(e.message || "Error booking");
+      setError(e?.message || "Error booking");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    // 3. Wrapped the button and a new input field in a flexbox layout
-    <div className="flex flex-col items-end gap-2 sm:flex-row sm:items-center">
-      <input
-        type="text"
-        placeholder="Reason (e.g., Fever)"
-        value={reason}
-        onChange={(e) => setReason(e.target.value)}
-        className="border border-gray-300 rounded p-2 text-sm w-48 focus:outline-emerald-500"
-      />
+    <div className="flex flex-col items-end gap-1 sm:flex-row sm:items-center">
+      <div className="flex flex-col gap-1">
+        <input
+          type="text"
+          placeholder="Reason (e.g., Fever)"
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
+          className="border border-gray-300 rounded p-2 text-sm w-48 focus:outline-emerald-500"
+        />
+        {error && (
+          <p className="text-xs text-red-500 max-w-xs text-right sm:text-left">
+            {error}
+          </p>
+        )}
+      </div>
       <button
         onClick={book}
         disabled={loading}

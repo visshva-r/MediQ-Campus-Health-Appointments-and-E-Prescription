@@ -44,3 +44,33 @@ MediQ is a **full-stack web application** that allows campus students to book do
 ```bash
 git clone [https://github.com/visshva-r/MediQ-Campus-Health-Appointments-and-E-Prescription.git](https://github.com/visshva-r/MediQ-Campus-Health-Appointments-and-E-Prescription.git)
 cd MediQ-Campus-Health-Appointments-and-E-Prescription
+```
+
+**2. Configure environment variables**
+
+Create a `.env.local` file in the project root with values for:
+
+```bash
+# NextAuth / Google OAuth
+GOOGLE_ID=your-google-oauth-client-id
+GOOGLE_SECRET=your-google-oauth-client-secret
+NEXTAUTH_SECRET=any-long-random-string
+NEXTAUTH_URL=http://localhost:3000
+
+# Database (Supabase or any Postgres)
+DATABASE_URL=postgresql://user:password@host:5432/mediq
+
+# Supabase Storage (for prescriptions)
+NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
+# Prefer service role for signed uploads; in local dev you can also reuse ANON
+SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-or-local-key
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+```
+
+> Make sure you have a **`prescriptions`** storage bucket in Supabase with public read access, matching the configuration in `src/lib/signedUpload.ts`.
+
+**3. Install dependencies and run**
+
+```bash
+npm install
+npm run dev

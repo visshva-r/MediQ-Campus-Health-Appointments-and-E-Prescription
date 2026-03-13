@@ -6,63 +6,122 @@ import PrescriptionUpload from "./prescription_upload";
 
 export const dynamic = "force-dynamic";
 
-export default async function DoctorDashboard() {
-  await requireRole("DOCTOR"); // ADMIN also passes via requireRole
+type SearchParams = {
+  doctorId?: string;
+};
+
+export default async function DoctorDashboard({
+  searchParams,
+}: {
+  searchParams?: SearchParams;
+}) {
+  const session = await requireRole("DOCTOR"); // ADMIN also passes via requireRole
+  const role = (session as any)?.role ?? "STUDENT";
 
   // ---- server actions for status updates ----
   async function setStatus(formData: FormData) {
     "use server";
     const id = String(formData.get("id") || "");
     const status = String(formData.get("status") || "PENDING") as
-      | "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELLED";
+      | "PENDING"
+      | "CONFIRMED"
+      | "COMPLETED"
+      | "CANCELLED";
     if (!id) return;
-    
+
     await prisma.appointment.update({ where: { id }, data: { status } });
-    
-    // Refreshes the screen immediately after clicking a button
-    revalidatePath("/doctor"); 
+
+    // Refresh the dashboard immediately after clicking a button
+    revalidatePath("/doctor/dashboard");
   }
 
-  // show upcoming (today onward), pending first
-  const appts = await prisma.appointment.findMany({
-    where: { slot: { start: { gte: new Date() } } },
-    orderBy: [{ status: "asc" }, { createdAt: "desc" }],
-    include: { user: true, doctor: true, slot: true },
-    take: 100,
-  });
+  // If the viewer is ADMIN, allow filtering by doctor via ?doctorId=
+  const isAdmin = role === "ADMIN";
+  const now = new Date();
+
+  const activeDoctorId = isAdmin ? searchParams?.doctorId : undefined;
+
+  const where: any = {
+    slot: { start: { gte: now } },
+  };
+
+  if (activeDoctorId) {
+    where.doctorId = activeDoctorId;
+  }
+
+  const [appts, doctors] = await Promise.all([
+    prisma.appointment.findMany({
+      where,
+      orderBy: [{ status: "asc" }, { createdAt: "desc" }],
+      include: { user: true, doctor: true, slot: true },
+      take: 100,
+    }),
+    isAdmin
+      ? prisma.doctor.findMany({ orderBy: { name: "asc" } })
+      : Promise.resolve([]),
+  ]);
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-semibold">Doctor Dashboard</h1>
+      <div className="flex items-center justify-between gap-3">
+        <h1 className="text-2xl font-semibold">Doctor Dashboard</h1>
+
+        {isAdmin && doctors.length > 0 && (
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-400">Filter by doctor:</span>
+            <select
+              className="px-2 py-1 rounded bg-neutral-900 border border-neutral-800 text-sm"
+              defaultValue={activeDoctorId ?? ""}
+              onChange={(e) => {
+                const v = e.currentTarget.value;
+                const url =
+                  v === ""
+                    ? "/doctor/dashboard"
+                    : `/doctor/dashboard?doctorId=${encodeURIComponent(v)}`;
+                // @ts-ignore
+                window.location = url;
+              }}
+            >
+              <option value="">All doctors</option>
+              {doctors.map((d: any) => (
+                <option key={d.id} value={d.id}>
+                  {d.name} — {d.specialty}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+      </div>
+
       {appts.length === 0 ? (
-        <div className="rounded border p-4 text-sm text-gray-400">No upcoming appointments.</div>
+        <div className="rounded border p-4 text-sm text-gray-400">
+          No upcoming appointments.
+        </div>
       ) : (
         <ul className="space-y-2">
           {appts.map((a: any) => (
             <li key={a.id} className="rounded border p-4 space-y-1">
               <div className="flex items-center justify-between">
-                
-                {/* Check for Name first, then Email, then "Student" */}
                 <div className="font-medium text-lg text-emerald-600">
                   {a.user?.name || a.user?.email || "Student"}
                 </div>
-                
+
                 <div className="text-xs px-2 py-1 rounded border">
                   {a.status}
                 </div>
               </div>
               <div className="text-sm text-gray-300">
-                {fmtDateTime(new Date(a.slot.start))} — {fmtTime(new Date(a.slot.end))}
+                {fmtDateTime(new Date(a.slot.start))} —{" "}
+                {fmtTime(new Date(a.slot.end))}
               </div>
-              
+
               {a.reason && <div className="text-sm">Reason: {a.reason}</div>}
 
-              {/* Prescription Upload/View Section */}
               <div className="pt-2 pb-1">
                 {a.prescriptionUrl ? (
-                  <a 
-                    href={a.prescriptionUrl} 
-                    target="_blank" 
+                  <a
+                    href={a.prescriptionUrl}
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm text-blue-500 font-medium hover:underline"
                   >
@@ -73,22 +132,27 @@ export default async function DoctorDashboard() {
                 )}
               </div>
 
-              {/* Status Update Buttons */}
               <div className="flex gap-2 pt-2">
                 <form action={setStatus}>
                   <input type="hidden" name="id" value={a.id} />
                   <input type="hidden" name="status" value="CONFIRMED" />
-                  <button className="px-3 py-1.5 rounded bg-emerald-600 text-white hover:bg-emerald-500">Confirm</button>
+                  <button className="px-3 py-1.5 rounded bg-emerald-600 text-white hover:bg-emerald-500">
+                    Confirm
+                  </button>
                 </form>
                 <form action={setStatus}>
                   <input type="hidden" name="id" value={a.id} />
                   <input type="hidden" name="status" value="COMPLETED" />
-                  <button className="px-3 py-1.5 rounded bg-sky-600 text-white hover:bg-sky-500">Complete</button>
+                  <button className="px-3 py-1.5 rounded bg-sky-600 text-white hover:bg-sky-500">
+                    Complete
+                  </button>
                 </form>
                 <form action={setStatus}>
                   <input type="hidden" name="id" value={a.id} />
                   <input type="hidden" name="status" value="CANCELLED" />
-                  <button className="px-3 py-1.5 rounded bg-rose-600 text-white hover:bg-rose-500">Cancel</button>
+                  <button className="px-3 py-1.5 rounded bg-rose-600 text-white hover:bg-rose-500">
+                    Cancel
+                  </button>
                 </form>
               </div>
             </li>

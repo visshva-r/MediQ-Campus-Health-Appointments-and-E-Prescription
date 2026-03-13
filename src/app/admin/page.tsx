@@ -42,8 +42,18 @@ export default async function AdminPage() {
       {/* Add Doctor */}
       <form action={createDoctor} className="space-y-3 border p-4 rounded">
         <h2 className="font-medium">Add Doctor</h2>
-        <input name="name" placeholder="Name" className="w-full px-2 py-1 rounded bg-neutral-800" />
-        <input name="specialty" placeholder="Specialty" className="w-full px-2 py-1 rounded bg-neutral-800" />
+        <input
+          name="name"
+          placeholder="Name"
+          required
+          className="w-full px-2 py-1 rounded bg-neutral-800"
+        />
+        <input
+          name="specialty"
+          placeholder="Specialty"
+          required
+          className="w-full px-2 py-1 rounded bg-neutral-800"
+        />
         <input name="room" placeholder="Room" className="w-full px-2 py-1 rounded bg-neutral-800" />
         <button className="px-3 py-2 bg-blue-600 text-white rounded">Add Doctor</button>
       </form>
@@ -51,12 +61,21 @@ export default async function AdminPage() {
       {/* Add Slots */}
       <form action={createSlots} className="space-y-3 border p-4 rounded">
         <h2 className="font-medium">Add Slots</h2>
-        <select name="doctorId" className="w-full px-2 py-1 rounded bg-neutral-800">
+        <select
+          name="doctorId"
+          required
+          className="w-full px-2 py-1 rounded bg-neutral-800"
+        >
           {doctors.map((d: any) => (
             <option key={d.id} value={d.id}>{d.name}</option>
           ))}
         </select>
-        <input type="date" name="date" className="w-full px-2 py-1 rounded bg-neutral-800" />
+        <input
+          type="date"
+          name="date"
+          required
+          className="w-full px-2 py-1 rounded bg-neutral-800"
+        />
         <input type="time" name="start" defaultValue="10:00" className="w-full px-2 py-1 rounded bg-neutral-800" />
         <input type="number" name="count" defaultValue={6} className="w-full px-2 py-1 rounded bg-neutral-800" />
         <input type="number" name="duration" defaultValue={10} className="w-full px-2 py-1 rounded bg-neutral-800" />

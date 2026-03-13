@@ -3,9 +3,11 @@ import { useState } from "react";
 
 export default function DeleteDoctorButton({ id }: { id: string }) {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleDelete() {
     if (!confirm("Delete this doctor and all their slots/appointments?")) return;
+    setError(null);
     setLoading(true);
     try {
       const res = await fetch(`/api/doctors/${id}`, { method: "DELETE" });
@@ -27,19 +29,26 @@ export default function DeleteDoctorButton({ id }: { id: string }) {
       alert("Deleted!");
       location.reload();
     } catch (e: any) {
-      alert(e?.message || "Delete failed");
+      setError(e?.message || "Delete failed");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <button
-      onClick={handleDelete}
-      disabled={loading}
-      className="px-3 py-2 bg-red-600 rounded text-white disabled:opacity-50"
-    >
-      {loading ? "Deleting..." : "Delete"}
-    </button>
+    <div className="flex flex-col items-end gap-1">
+      <button
+        onClick={handleDelete}
+        disabled={loading}
+        className="px-3 py-2 bg-red-600 rounded text-white disabled:opacity-50"
+      >
+        {loading ? "Deleting..." : "Delete"}
+      </button>
+      {error && (
+        <p className="text-xs text-red-500">
+          {error}
+        </p>
+      )}
+    </div>
   );
 }
