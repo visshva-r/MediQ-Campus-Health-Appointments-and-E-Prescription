@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/lib/auth";
 import { fmtDateTime, fmtTime } from "@/lib/date";
 import Link from "next/link";
+import DoctorSelector from "./DoctorSelector";
 
 export const dynamic = "force-dynamic"; // always fresh list
 
@@ -52,29 +53,15 @@ export default async function AdminSlotsPage({
       <h1 className="text-2xl font-semibold">Slots</h1>
 
       {/* doctor selector */}
-      <form className="flex gap-2">
-        <select
-          name="doctorId"
-          defaultValue={activeDoctorId}
-          className="px-2 py-1 rounded bg-neutral-900 border border-neutral-800"
-          onChange={(e) => {
-            // simple clientless navigation
-            const v = e.currentTarget.value;
-            // @ts-ignore
-            window.location = `/admin/slots?doctorId=${v}`;
-          }}
-        >
-          {doctors.map((d: any) => (
-            <option key={d.id} value={d.id}>{d.name} — {d.specialty}</option>
-          ))}
-        </select>
+      <div className="flex gap-2">
+        <DoctorSelector doctors={doctors} activeDoctorId={activeDoctorId} />
         <form action={deleteFutureSlots}>
           <input type="hidden" name="doctorId" value={activeDoctorId} />
           <button className="px-3 py-2 rounded bg-amber-600 text-white">
             Delete ALL future slots for this doctor
           </button>
         </form>
-      </form>
+      </div>
 
       {/* slots list */}
       {slots.length === 0 ? (

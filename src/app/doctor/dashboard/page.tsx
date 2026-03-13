@@ -3,6 +3,7 @@ import { requireRole } from "@/lib/auth";
 import { fmtDateTime, fmtTime } from "@/lib/date";
 import { revalidatePath } from "next/cache";
 import PrescriptionUpload from "./prescription_upload";
+import DoctorFilter from "./DoctorFilter";
 
 export const dynamic = "force-dynamic";
 
@@ -67,29 +68,10 @@ export default async function DoctorDashboard({
         <h1 className="text-2xl font-semibold">Doctor Dashboard</h1>
 
         {isAdmin && doctors.length > 0 && (
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-400">Filter by doctor:</span>
-            <select
-              className="px-2 py-1 rounded bg-neutral-900 border border-neutral-800 text-sm"
-              defaultValue={activeDoctorId ?? ""}
-              onChange={(e) => {
-                const v = e.currentTarget.value;
-                const url =
-                  v === ""
-                    ? "/doctor/dashboard"
-                    : `/doctor/dashboard?doctorId=${encodeURIComponent(v)}`;
-                // @ts-ignore
-                window.location = url;
-              }}
-            >
-              <option value="">All doctors</option>
-              {doctors.map((d: any) => (
-                <option key={d.id} value={d.id}>
-                  {d.name} — {d.specialty}
-                </option>
-              ))}
-            </select>
-          </div>
+          <DoctorFilter
+            doctors={doctors}
+            activeDoctorId={activeDoctorId ?? ""}
+          />
         )}
       </div>
 
