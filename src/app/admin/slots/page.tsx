@@ -1,3 +1,4 @@
+import type { Slot } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/lib/auth";
 import { fmtDateTime, fmtTime } from "@/lib/date";
@@ -70,7 +71,7 @@ export default async function AdminSlotsPage({
         </div>
       ) : (
         <ul className="space-y-2">
-          {slots.map((s: any) => (
+          {slots.map((s: Slot) => (
             <li key={s.id} className="flex items-center justify-between rounded border p-3">
               <div className="text-sm">
                 {fmtDateTime(new Date(s.start))} — {fmtTime(new Date(s.end))}

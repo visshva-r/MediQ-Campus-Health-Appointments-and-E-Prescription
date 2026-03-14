@@ -1,8 +1,9 @@
+import type { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 
-export async function POST(req: any) {
+export async function POST(req: Request) {
   const session = await getSession();
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -19,7 +20,7 @@ export async function POST(req: any) {
   if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
   try {
-    const result = await prisma.$transaction(async (tx: any) => {
+    const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const slot = await tx.slot.findUnique({
         where: { id: slotId },
         select: { capacity: true, bookedCount: true, doctorId: true },
@@ -39,7 +40,8 @@ export async function POST(req: any) {
     });
 
     return NextResponse.json({ data: result }, { status: 201 });
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message ?? "Failed to book" }, { status: 400 });
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : "Failed to book";
+    return NextResponse.json({ error: message }, { status: 400 });
   }
 }

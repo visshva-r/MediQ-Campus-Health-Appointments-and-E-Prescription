@@ -1,4 +1,5 @@
 // src/app/api/doctors/route.ts
+import type { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
@@ -9,8 +10,7 @@ export async function GET(req: Request) {
   const take = 10; 
   const skip = (page - 1) * take;
 
-  // Added ": any" here to bypass the strict QueryMode check
-  const where: any = {
+  const where: Prisma.DoctorWhereInput = {
     OR: [
       { name: { contains: q, mode: "insensitive" } },
       { specialty: { contains: q, mode: "insensitive" } },

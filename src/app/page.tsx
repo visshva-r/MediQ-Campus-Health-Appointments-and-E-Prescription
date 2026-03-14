@@ -5,7 +5,7 @@ import Button from "@/components/ui/Button";
 export default async function Home() {
   const session = await getSession();
   const email = session?.user?.email ?? "Guest";
-  const role = (session as any)?.role ?? "ANON";
+  const role = session?.role ?? "ANON";
 
   return (
     <div className="space-y-4">

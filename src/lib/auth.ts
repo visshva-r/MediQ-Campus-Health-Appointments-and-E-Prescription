@@ -12,7 +12,7 @@ export async function getSession() {
  */
 export async function requireRole(role: "ADMIN" | "DOCTOR" | "STUDENT" = "STUDENT") {
   const session = await getSession();
-  const sRole = (session as any)?.role ?? "STUDENT";
+  const sRole = session?.role ?? "STUDENT";
 
   if (role === "STUDENT") return session;
 
@@ -21,8 +21,7 @@ export async function requireRole(role: "ADMIN" | "DOCTOR" | "STUDENT" = "STUDEN
     (role === "ADMIN" && sRole === "ADMIN");
 
   if (!ok) {
-    const err = new Error("Forbidden");
-    // @ts-ignore
+    const err = new Error("Forbidden") as Error & { status?: number };
     err.status = 403;
     throw err;
   }

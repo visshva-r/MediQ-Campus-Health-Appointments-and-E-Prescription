@@ -6,7 +6,7 @@ export default withAuth(
   function middleware(req: NextRequest) {
     // Custom logic here only if you want to redirect per-role.
     // The role is available on req.nextauth.token?.role
-    const token = (req as any).nextauth?.token as { role?: string } | undefined;
+    const token = (req as unknown as { nextauth?: { token?: { role?: string } } }).nextauth?.token;
     const role = token?.role ?? "STUDENT";
     const { pathname } = req.nextUrl;
 

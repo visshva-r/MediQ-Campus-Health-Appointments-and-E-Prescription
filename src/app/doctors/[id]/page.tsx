@@ -1,3 +1,4 @@
+import type { Slot } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { fmtDateTime, fmtTime } from "@/lib/date";
 import Link from "next/link";
@@ -25,7 +26,7 @@ export default async function DoctorDetail({
     orderBy: { start: "asc" },
     take: 50,
   });
-  const available = upcoming.filter((s: any) => s.bookedCount < s.capacity);
+  const available = upcoming.filter((s: Slot) => s.bookedCount < s.capacity);
 
   return (
     <div className="space-y-6">
@@ -45,7 +46,7 @@ export default async function DoctorDetail({
           </div>
         ) : (
           <ul className="space-y-2">
-            {available.map((s: any) => (
+            {available.map((s: Slot) => (
               <li key={s.id} className="flex items-center justify-between rounded border p-3">
                 <div className="text-sm">
                   {fmtDateTime(new Date(s.start))} — {fmtTime(new Date(s.end))}

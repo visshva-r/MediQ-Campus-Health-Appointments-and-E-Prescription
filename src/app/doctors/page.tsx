@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Doctor } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -16,7 +17,7 @@ export default async function DoctorsPage() {
         <p>No doctors available yet.</p>
       ) : (
         <div className="flex flex-col gap-4">
-          {doctors.map((d: any) => (
+          {doctors.map((d: Doctor) => (
             <div
               key={d.id}
               className="border border-neutral-700 rounded-lg p-4 flex justify-between items-center"

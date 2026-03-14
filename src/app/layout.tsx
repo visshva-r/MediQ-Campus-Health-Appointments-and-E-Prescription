@@ -8,7 +8,7 @@ export const metadata = { title: "MediQ — Campus Health" };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const session = await getSession();
-  const role = (session as any)?.role as "STUDENT" | "DOCTOR" | "ADMIN" | undefined;
+  const role = session?.role;
 
   return (
     <html lang="en">

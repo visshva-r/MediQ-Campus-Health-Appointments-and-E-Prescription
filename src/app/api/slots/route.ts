@@ -1,3 +1,4 @@
+import type { Prisma, Slot } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
@@ -14,7 +15,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "doctorId required" }, { status: 400 });
   }
 
-  let where: any = { doctorId };
+  const where: Prisma.SlotWhereInput = { doctorId };
   if (date) {
     const start = new Date(date + "T00:00:00");
     const end = new Date(date + "T23:59:59.999");
@@ -26,8 +27,7 @@ export async function GET(req: Request) {
     orderBy: { start: "asc" },
   });
 
-  // filter out full slots
-  const available = slots.filter((s: any) => s.bookedCount < s.capacity);
+  const available = slots.filter((s: Slot) => s.bookedCount < s.capacity);
 
   return NextResponse.json({ data: available });
 }

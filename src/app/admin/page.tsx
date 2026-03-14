@@ -1,3 +1,4 @@
+import type { Doctor } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/lib/auth";
 import DeleteDoctorButton from "./DeleteDoctorButton";
@@ -66,7 +67,7 @@ export default async function AdminPage() {
           required
           className="w-full px-2 py-1 rounded bg-neutral-800"
         >
-          {doctors.map((d: any) => (
+          {doctors.map((d: Doctor) => (
             <option key={d.id} value={d.id}>{d.name}</option>
           ))}
         </select>
@@ -86,7 +87,7 @@ export default async function AdminPage() {
       {/* Optional list with delete buttons */}
       <div className="space-y-2">
         <h2 className="text-lg font-medium">Existing Doctors</h2>
-        {doctors.map((d: any) => (
+        {doctors.map((d: Doctor) => (
           <div key={d.id} className="flex items-center justify-between border rounded p-3">
             <div>{d.name} — {d.specialty}</div>
             <DeleteDoctorButton id={d.id} />

@@ -29,8 +29,8 @@ export default function BookButton({
         throw new Error(message);
       }
       window.location.href = "/me/appointments";
-    } catch (e: any) {
-      setError(e?.message || "Error booking");
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "Error booking");
     } finally {
       setLoading(false);
     }

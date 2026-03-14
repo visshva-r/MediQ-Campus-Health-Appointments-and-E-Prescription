@@ -13,7 +13,7 @@ export default function DeleteDoctorButton({ id }: { id: string }) {
       const res = await fetch(`/api/doctors/${id}`, { method: "DELETE" });
 
       // Be defensive: Try JSON; if that fails, read text.
-      let payload: any = null;
+      let payload: { ok?: boolean; error?: string } | null = null;
       const ct = res.headers.get("content-type") || "";
       if (ct.includes("application/json")) {
         payload = await res.json();
@@ -28,8 +28,8 @@ export default function DeleteDoctorButton({ id }: { id: string }) {
 
       alert("Deleted!");
       location.reload();
-    } catch (e: any) {
-      setError(e?.message || "Delete failed");
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "Delete failed");
     } finally {
       setLoading(false);
     }

@@ -17,7 +17,7 @@ export default async function DoctorDashboard({
   searchParams?: SearchParams;
 }) {
   const session = await requireRole("DOCTOR"); // ADMIN also passes via requireRole
-  const role = (session as any)?.role ?? "STUDENT";
+  const role = session?.role ?? "STUDENT";
 
   // ---- server actions for status updates ----
   async function setStatus(formData: FormData) {
@@ -42,7 +42,7 @@ export default async function DoctorDashboard({
 
   const activeDoctorId = isAdmin ? searchParams?.doctorId : undefined;
 
-  const where: any = {
+  const where: { slot: { start: { gte: Date } }; doctorId?: string } = {
     slot: { start: { gte: now } },
   };
 
@@ -81,7 +81,7 @@ export default async function DoctorDashboard({
         </div>
       ) : (
         <ul className="space-y-2">
-          {appts.map((a: any) => (
+          {appts.map((a) => (
             <li key={a.id} className="rounded border p-4 space-y-1">
               <div className="flex items-center justify-between">
                 <div className="font-medium text-lg text-emerald-600">

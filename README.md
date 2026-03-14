@@ -41,8 +41,9 @@ MediQ is a **full-stack web application** that allows campus students to book do
 ## 🛠️ Local Setup
 
 **1. Clone the repository**
+
 ```bash
-git clone [https://github.com/visshva-r/MediQ-Campus-Health-Appointments-and-E-Prescription.git](https://github.com/visshva-r/MediQ-Campus-Health-Appointments-and-E-Prescription.git)
+git clone https://github.com/visshva-r/MediQ-Campus-Health-Appointments-and-E-Prescription.git
 cd MediQ-Campus-Health-Appointments-and-E-Prescription
 ```
 
@@ -74,3 +75,14 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 ```bash
 npm install
 npm run dev
+```
+
+The app will be at **http://localhost:3000**.
+
+**4. Optional: Lint, build, and tests**
+
+```bash
+npm run lint          # ESLint (no errors)
+npm run build         # Production build
+npm run test:e2e      # Playwright e2e tests (starts dev server, requires DATABASE_URL)
+```

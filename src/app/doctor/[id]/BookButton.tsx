@@ -18,8 +18,8 @@ export default function BookButton({ doctorId, slotId }: { doctorId: string; slo
       if (!res.ok) throw new Error(data?.error || "Failed to book");
       alert("Appointment booked!");
       router.push("/me/appointments");
-    } catch (e: any) {
-      alert(e.message);
+    } catch (e: unknown) {
+      alert(e instanceof Error ? e.message : "Failed to book");
     } finally {
       setLoading(false);
     }

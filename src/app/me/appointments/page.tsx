@@ -1,8 +1,10 @@
+import type { Appointment } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { Card, CardTitle, CardMeta } from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 import { fmtDateTime, fmtTime } from "@/lib/date";
+import Link from "next/link";
 
 const statusClass = (s: string) =>
   s === "PENDING"   ? "bg-amber-500/15 text-amber-400 border-amber-600/30" :
@@ -26,14 +28,14 @@ export default async function MyAppointments() {
   if (appts.length === 0) {
     return (
       <Card className="text-center text-sm text-gray-400">
-        No appointments yet — book your first one from <a className="text-blue-500" href="/doctors">Doctors</a>.
+        No appointments yet — book your first one from <Link className="text-blue-500" href="/doctors">Doctors</Link>.
       </Card>
     );
   }
 
   return (
     <div className="space-y-3">
-      {appts.map((a: any) => (
+      {appts.map((a: Appointment & { doctor: { name: string; specialty: string }; slot: { start: Date; end: Date } }) => (
         <Card key={a.id} className="space-y-1">
           <div className="flex items-center justify-between">
             <CardTitle>{a.doctor.name} — {a.doctor.specialty}</CardTitle>

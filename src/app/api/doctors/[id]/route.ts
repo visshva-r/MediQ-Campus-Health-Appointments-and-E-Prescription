@@ -14,18 +14,15 @@ export async function DELETE(
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const role = (session as any).role ?? "STUDENT";
+    const role = session.role ?? "STUDENT";
     if (role !== "ADMIN") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     await prisma.doctor.delete({ where: { id: id } });
     return NextResponse.json({ ok: true });
-  } catch (e: any) {
-    // Always JSON, never HTML
-    return NextResponse.json(
-      { error: e?.message ?? "Delete failed" },
-      { status: 500 }
-    );
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : "Delete failed";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
