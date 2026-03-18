@@ -86,3 +86,15 @@ npm run lint          # ESLint (no errors)
 npm run build         # Production build
 npm run test:e2e      # Playwright e2e tests (starts dev server, requires DATABASE_URL)
 ```
+
+## 🔒 Supabase Security (RLS)
+
+If you use Supabase, the database linter may report security errors like **“RLS Disabled in Public”** and **“Sensitive Columns Exposed”** for tables in the `public` schema (including NextAuth tables like `Account`, `Session`, etc.).
+
+This repo includes a script to fix those linter findings by enabling (and forcing) RLS:
+
+- Run `supabase/rls.sql` in the **Supabase SQL Editor**
+
+Notes:
+- With RLS enabled and **no policies**, the default behavior is **deny** for `anon`/`authenticated` via PostgREST.
+- Server-side access via Prisma using your `DATABASE_URL` is unaffected.
