@@ -104,6 +104,23 @@ Notes:
 - With RLS enabled and **no policies**, the default behavior is **deny** for `anon`/`authenticated` via PostgREST.
 - Server-side access via Prisma using your `DATABASE_URL` is unaffected.
 
+## ⏰ Prevent Supabase free tier from pausing
+
+Free projects pause after **7 days without database/API activity** ([Supabase pricing](https://supabase.com/pricing)).
+
+**UptimeRobot tip:** Pinging the homepage (`/`) with **HEAD** keeps Vercel “up” but usually **does not query Postgres** (JWT sessions, no Prisma on `/`). Supabase can still pause.
+
+Use the built-in health endpoint instead:
+
+```text
+https://mediq-campus-health-appointments-an.vercel.app/api/health
+```
+
+In UptimeRobot:
+- **URL:** your Vercel URL + `/api/health`
+- **Method:** GET or HEAD (both run `SELECT 1` against the DB)
+- **Interval:** every 5 minutes (or daily — anything within 7 days works)
+
 ## 🩺 Troubleshooting: `tenant/user postgres... not found`
 
 If Vercel logs show:
