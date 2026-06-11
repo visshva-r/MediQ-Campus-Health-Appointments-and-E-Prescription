@@ -49,24 +49,29 @@ cd MediQ-Campus-Health-Appointments-and-E-Prescription
 
 **2. Configure environment variables**
 
-Create a `.env.local` file in the project root with values for:
+Copy `.env.example` to `.env.local` and fill in values from your Supabase + Google OAuth dashboards.
 
 ```bash
-# NextAuth / Google OAuth
-GOOGLE_ID=your-google-oauth-client-id
-GOOGLE_SECRET=your-google-oauth-client-secret
-NEXTAUTH_SECRET=any-long-random-string
-NEXTAUTH_URL=http://localhost:3000
-
-# Database (Supabase or any Postgres)
-DATABASE_URL=postgresql://user:password@host:5432/mediq
-
-# Supabase Storage (for prescriptions)
-NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
-# Prefer service role for signed uploads; in local dev you can also reuse ANON
-SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-or-local-key
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+cp .env.example .env.local
 ```
+
+### Supabase database URLs (important for Vercel)
+
+In **Supabase → Project Settings → Database → Connection string**:
+
+| Variable | Which string to copy | Notes |
+|----------|----------------------|--------|
+| `DATABASE_URL` | **Transaction pooler** (port **6543**) | Append `?pgbouncer=true&connection_limit=1` at the end |
+| `DIRECT_URL` | **Direct connection** URI (port **5432**) | Used for `npx prisma db push` / migrations locally |
+
+Example (replace `YOUR_PROJECT_REF` and password):
+
+```bash
+DATABASE_URL=postgresql://postgres.YOUR_PROJECT_REF:PASSWORD@aws-0-ap-south-1.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1
+DIRECT_URL=postgresql://postgres:PASSWORD@db.YOUR_PROJECT_REF.supabase.co:5432/postgres
+```
+
+Also set on **Vercel → Project → Settings → Environment Variables** (Production + Preview), then **Redeploy**.
 
 > Make sure you have a **`prescriptions`** storage bucket in Supabase with public read access, matching the configuration in `src/lib/signedUpload.ts`.
 
@@ -98,3 +103,21 @@ This repo includes a script to fix those linter findings by enabling (and forcin
 Notes:
 - With RLS enabled and **no policies**, the default behavior is **deny** for `anon`/`authenticated` via PostgREST.
 - Server-side access via Prisma using your `DATABASE_URL` is unaffected.
+
+## 🩺 Troubleshooting: `tenant/user postgres... not found`
+
+If Vercel logs show:
+
+```text
+FATAL: (ENOTFOUND) tenant/user postgres.YOUR_PROJECT_REF not found
+```
+
+This means **`DATABASE_URL` on Vercel is wrong or outdated** (not an app code bug). Fix it:
+
+1. Open **Supabase Dashboard** → confirm the project is **Active** (not paused — free tier pauses after inactivity; click **Restore** if needed).
+2. **Project Settings → Database → Connection string**
+3. Copy **Transaction pooler** (port 6543), replace `[YOUR-PASSWORD]`, add `?pgbouncer=true&connection_limit=1`.
+4. In **Vercel → Settings → Environment Variables**, update `DATABASE_URL` (and add `DIRECT_URL` if missing).
+5. **Deployments → Redeploy** the latest deployment (env changes do not apply until redeploy).
+
+Password special characters (`@`, `#`, `%`) must be **URL-encoded** in the connection string.
